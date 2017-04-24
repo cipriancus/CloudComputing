@@ -1,0 +1,59 @@
+<html>
+<head><title>Web Chat</title></head>
+<body>
+<div align="center">
+<h2><span id="connected">{{ connected }}</span>
+    users are on this page right now.</h2>
+
+<form method="post" action="/chat" id="nameform">
+    <label>Set your name</label>
+    <input type="text" id="name">
+    <input type="submit" value="Submit">
+</form>
+<p id="nameconf"></p>
+
+<form method="post" action="#" id="messageform">
+    <label>Input a response</label>
+    <input type="text" id="message">
+    <input type="submit" value="Submit">
+</form>
+<div id="msg-list"></div>
+    </div>
+<script type="text/javascript"
+        src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var url = "http://" + document.domain + ":" + location.port;
+        var socket = io.connect(url + "/chat");
+
+        $("#messageform").submit(function (event) {
+            socket.emit('msg', {'msg': $('#message').val()});
+            $('#message').val('');
+            return false;
+        });
+
+        $("#nameform").submit(function (event) {
+            socket.emit('name', {'name': $('#name').val()});
+            $('#name').val('');
+            return false;
+        });
+
+        socket.on('msg', function (msg) {
+            $("#msg-list").prepend('<h3>' + msg.msg + '<h3>');
+        });
+
+        socket.on('msg', function (msg) {
+            $("#connected").html(msg.count);
+        });
+
+        socket.on('name', function (name) {
+            $("#nameconf").html('You changed your name to '+name.name);
+        });
+
+    });
+</script>
+
+</body>
+</html>
