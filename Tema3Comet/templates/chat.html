@@ -1,0 +1,70 @@
+<html>
+<head><title>Web Chat</title></head>
+<body>
+<div align="center">
+<h2><span id="connected">{{ connected }}</span>
+    users are on this page right now.</h2>
+
+    <label>Set your name</label>
+    <input type="text" id="name">
+    <button id="nameform" >Submit</button>
+<p id="nameconf"></p>
+
+    <label>Input a response</label>
+    <input type="text" id="message">
+    <button id="messageform" >Submit</button>
+
+<div id="msg-list"></div>
+    </div>
+<script
+    src="https://code.jquery.com/jquery-1.11.1.min.js"
+    integrity="sha256-VAvG3sHdS5LqTT+5A/aeq/bZGa/Uj04xKxY8KM/w9EE="
+    crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var url = "http://" + document.domain + ":" + location.port;
+
+        //$("#connected").html(msg.count);
+
+        setInterval(function(){
+           $.ajax({
+                type : "GET",
+                url : "/getmessages",
+                contentType: 'application/json;charset=UTF-8',
+                success: function(result) {
+                    $("#msg-list").html(result);
+                }
+            });
+        }, 3000);
+
+        $("#messageform").click(function () {
+            $.ajax({
+                type : "POST",
+                url : "/postmessages",
+                data: JSON.stringify($('#message').val(), null, '\t'),
+                contentType: 'application/json;charset=UTF-8',
+                success: function(result) {
+                    $("#msg-list").prepend('<h3>' + result + '<h3>');
+                }
+            });
+        });
+
+        $("#nameform").click(function () {
+            $.ajax({
+                type : "POST",
+                url : "/setname",
+                data: JSON.stringify($('#name').val(), null, '\t'),
+                contentType: 'application/json;charset=UTF-8',
+                success: function(result) {
+                    $("#nameconf").html('You changed your name to '+$('#name').val());
+                }
+            });
+        });
+
+    });
+</script>
+
+</body>
+</html>

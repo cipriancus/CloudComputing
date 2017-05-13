@@ -33,4 +33,4 @@ def ws_name(name):
     socketio.emit('name', {'name': cgi.escape(name['name'])},namespace="/chat")
 
 if __name__ == '__main__':
-    socketio.run(app, "127.0.0.1", port=5000)
+    app.run(host='127.0.0.1', port=8080, debug=True)

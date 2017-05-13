@@ -1,0 +1,6 @@
+Flask==0.12.1
+
+gunicorn==19.7.1
+
+gevent==1.2.1
+Flask-SocketIO==2.8.6
